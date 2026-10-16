@@ -9,7 +9,7 @@ from launch.actions import (
     EmitEvent,
     ExecuteProcess,
     IncludeLaunchDescription,
-    LogError,
+    LogInfo,
     RegisterEventHandler,
 )
 from launch.event_handlers import OnProcessExit
@@ -81,7 +81,7 @@ def generate_launch_description():
         del context
         if event.returncode != 0:
             return [
-                LogError(msg="ENS160 device check failed; stopping bringup."),
+                LogInfo(msg="ERROR: ENS160 device check failed; stopping bringup."),
                 EmitEvent(event=Shutdown(reason="ENS160 device is not ready")),
             ]
         return [sensor_launch]
