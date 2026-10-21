@@ -1,6 +1,7 @@
 # my_rUBot Sensors
 
-Integration of environmental sensors with the mecanum rUBot using ROS 2.
+Integration of environmental sensors with the mecanum rUBot and ROSbot XL
+using ROS 2.
 
 This repository contains only the software that combines robot state,
 navigation and sensor measurements. Robot drivers remain in
@@ -13,7 +14,8 @@ starting with
 
 | Repository | Responsibility |
 | --- | --- |
-| `my_rUBot_mecanum` | Robot description, drivers, control and navigation |
+| `my_rUBot_mecanum` | Mecanum robot description, drivers, control and navigation (Humble) |
+| `my_rUBot_rosbot` | ROSbot XL custom control and configuration (Jazzy) |
 | `ENS160_air_quality` | ENS160 firmware, standalone tools and ROS 2 driver |
 | `my_rUBot_sensors` | Robot-sensor bringup, spatial logging and mapping |
 
@@ -27,12 +29,13 @@ starting with
 The repository is designed to support additional sensors later without moving
 their generic drivers into this project.
 
-The hardware launch extends the robust rUBot bringup from
-`my_rUBot_mecanum`; it does not reimplement robot-device startup.
+The platform launches extend the existing robot bringups; they do not
+reimplement robot drivers.
 
 ## Workspace layout
 
-The three repositories are independent clones inside the same ROS 2 workspace:
+The repositories are independent clones. Use a separate workspace for each
+ROS distribution.
 
 ```text
 my_rUBot_sensor_ws/
@@ -40,6 +43,27 @@ my_rUBot_sensor_ws/
     ├── my_rUBot_mecanum/
     ├── ENS160_air_quality/
     └── my_rUBot_sensors/
+```
+
+```text
+rosbot_ws/
+└── src/
+    ├── official Husarion repositories
+    ├── my_rUBot_rosbot/
+    ├── ENS160_air_quality/
+    └── my_rUBot_sensors/
+```
+
+Select the platform through the common interface:
+
+```bash
+# Ubuntu 22.04 / ROS 2 Humble / physical mecanum robot
+ros2 launch rubot_sensor_bringup ens160_robot.launch.py \
+  robot:=mecanum mode:=hardware start_sensor:=true
+
+# Ubuntu 24.04 / ROS 2 Jazzy / simulated ROSbot XL
+ros2 launch rubot_sensor_bringup ens160_robot.launch.py \
+  robot:=rosbot mode:=simulation start_sensor:=false
 ```
 
 See [Workspace setup](docs/2_workspace_setup.md) for installation and build
